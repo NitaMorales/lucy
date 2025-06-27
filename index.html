@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>carta para lucy</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: #0b0c1c;
+      color: white;
+      font-family: 'Courier New', monospace;
+      height: 100vh;
+      overflow-x: hidden;
+      scroll-behavior: smooth;
+    }
+    .estrella {
+      position: fixed;
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      animation: brillo 2s infinite alternate;
+      z-index: 0;
+    }
+    @keyframes brillo {
+      from { opacity: 0.2; }
+      to { opacity: 1; }
+    }
+    .seccion {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      text-align: center;
+      position: relative;
+      z-index: 1;
+      padding: 20px;
+    }
+    h1 {
+      font-size: 2em;
+      margin-bottom: 30px;
+      z-index: 2;
+      position: relative;
+    }
+    #lucy {
+      width: 60px;
+      height: auto;
+      position: fixed;
+      top: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 3;
+    }
+    .boton-circular, .tap, .seguir {
+      margin-top: 40px;
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      border: 2px solid white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      cursor: pointer;
+      transition: background 0.3s;
+      z-index: 2;
+      position: relative;
+    }
+    .boton-circular:hover, .tap:hover, .seguir:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+    .mensaje-lateral {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      max-width: 150px;
+      font-size: 0.9em;
+      color: #ccc;
+      z-index: 2;
+    }
+    .frase-flotante {
+      font-size: 1.2em;
+      opacity: 0;
+      animation: aparecer 1s forwards;
+      white-space: pre-wrap;
+      max-width: 80%;
+      cursor: pointer;
+      z-index: 2;
+      position: relative;
+    }
+    @keyframes aparecer {
+      to { opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+  <img id="lucy" src="Lucy.svg" alt="Lucy">
+
+  <div class="seccion" id="inicio">
+    <h1>carta para lucy</h1>
+    <div class="boton-circular" onclick="document.getElementById('seccion-1').scrollIntoView()">tap/click aquí</div>
+  </div>
+
+  <div class="seccion" id="seccion-1">
+    <h1>lo que sé que sabes</h1>
+    <div class="tap" id="tap1" onclick="mostrarFrase(1)">tap</div>
+  </div>
+
+  <div class="seccion" id="seccion-2">
+    <h1>lo que no te dije</h1>
+    <div class="tap" id="tap2" onclick="mostrarFrase(2)">tap</div>
+  </div>
+
+  <div class="seccion" id="seccion-3">
+    <h1>lo que ahora sé por ti</h1>
+    <div class="tap" id="tap3" onclick="mostrarFrase(3)">tap</div>
+  </div>
+
+  <div class="seccion" id="seccion-4">
+    <h1>lo que deseo que olvides</h1>
+    <div class="tap" id="tap4" onclick="mostrarFrase(4)">tap</div>
+  </div>
+
+  <div class="seccion" id="seccion-5">
+    <div class="frase-flotante" style="animation: aparecer 2s forwards; font-size: 1.5em;">
+      te celebro, Lucy.<br>– M.
+    </div>
+  </div>
+
+  <script>
+    const frases = {
+      1: [
+        "sé que sabes que tu fuerza no es un grito,\nes la forma silenciosa en que ocupas espacio sin pedir permiso.",
+        "sé que sabes que eres una,\nuna como en unidad indivisible,\nuna como en primera chispa,\nuna como en origen.",
+        "sé que te mueves por amor,\npero no ese amor tibio, doméstico.",
+        "te mueve el amor que incomoda,\nel que disloca estructuras y siembra otras.",
+        "sé que tu arte no solo inspira—\ntu arte despierta\nlo que dormía bajo siglos de espera."
+      ],
+      2: [
+        "no te dije que el primer espacio en el que me sentí artista,\nme lo abriste tú.\nsin protocolo, sin jerarquía.",
+        "no te dije que tu vulnerabilidad\nes la herramienta más afilada que llevas encima.",
+        "no te dije que tu empatía tiene precisión quirúrgica.",
+        "no te dije que donde llegas,\nla palabra familia deja de sonar a ficción."
+      ],
+      3: [
+        "ahora sé que no permitiste que nadie\nescribiera tu historia con su caligrafía mediocre.",
+        "ahora sé que no dejaron intactas tus ganas,\npero tampoco pudieron extirparlas.",
+        "sé que sabes sostener,\nsin anularte, sin plegarte.",
+        "y ahora sé, con certeza profunda,\nque no vas a parar.\n\nni ahora. ni nunca."
+      ],
+      4: [
+        "olvida esa mentira útil que dice que la suavidad es debilidad—\nla suavidad es filo,\ny tú lo sabes bien.",
+        "olvida que habitarte sea lucha constante—\nque a veces también se vale flotar.",
+        "olvida que todo cambio es dolor—\na veces, cambiar es volver a casa.",
+      ]
+    };
+
+    const indices = { 1: 0, 2: 0, 3: 0, 4: 0 };
+
+    function mostrarFrase(seccion) {
+      const seccionEl = document.getElementById(`seccion-${seccion}`);
+      const boton = document.getElementById(`tap${seccion}`);
+      if (indices[seccion] === 0 && boton) boton.remove();
+
+      const fraseActual = frases[seccion][indices[seccion]];
+      const nueva = document.createElement('div');
+      nueva.className = 'frase-flotante';
+      nueva.textContent = fraseActual;
+      nueva.onclick = () => {
+        nueva.remove();
+        indices[seccion]++;
+        if (indices[seccion] < frases[seccion].length) {
+          mostrarFrase(seccion);
+        } else {
+          const siguiente = document.createElement('div');
+          siguiente.className = 'seguir';
+          siguiente.textContent = seccion === 4 ? 'seguir' : 'seguir';
+          siguiente.onclick = () => {
+            if (seccion === 4) {
+              document.getElementById('seccion-5').scrollIntoView();
+              setTimeout(() => {
+                const reinicio = document.createElement('div');
+                reinicio.className = 'seguir';
+                reinicio.textContent = 'volver a empezar';
+                reinicio.onclick = () => location.reload();
+                document.getElementById('seccion-5').appendChild(reinicio);
+              }, 1000);
+            } else {
+              document.getElementById(`seccion-${seccion + 1}`).scrollIntoView();
+            }
+          };
+          seccionEl.appendChild(siguiente);
+        }
+      };
+      seccionEl.appendChild(nueva);
+    }
+
+    const coloresEstrella = [
+      ...Array(10).fill('#BEEF9E'),
+      ...Array(10).fill('#CAA8F5'),
+      ...Array(10).fill('#FE4A49'),
+      ...Array(10).fill('#4056F4'),
+      ...Array(10).fill('#CE1483'),
+      ...Array(50).fill('#FFFFFF')
+    ];
+
+    for (let i = 0; i < 100; i++) {
+      const estrella = document.createElement('div');
+      estrella.className = 'estrella';
+      estrella.style.top = `${Math.random() * 100}%`;
+      estrella.style.left = `${Math.random() * 100}%`;
+      estrella.style.backgroundColor = coloresEstrella[i];
+      estrella.style.animationDelay = `${Math.random() * 2}s`;
+      document.body.appendChild(estrella);
+    }
+  </script>
+</body>
+</html>
