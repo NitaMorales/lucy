@@ -150,9 +150,7 @@
 <div class="popup" id="popup">
   <div class="popup-close" onclick="document.getElementById('popup').style.display='none'">✕</div>
   <p><strong>esta carta es un artefacto vivo:</strong><br>
-  se abre cada vez que necesites recordar cómo te ve alguien que te ha visto de verdad.<br>
-  no se agota, no se cierra, no se lee igual dos veces. vuelve a ella cuando lo olvides.<br>
-  que te hable en la voz que haga falta. que te devuelva el pulso.</p>
+  un archivo afectivo que nunca se lee igual. está hecha de frases que se mueven, espejos que giran, sentidos que aparecen distinto según el día. ábrela cada vez que necesites recordar cómo te ve quien te celebra. siempre tendrá algo nuevo que decirte.</p>
 </div>
 
 <!-- SECCIONES -->
@@ -183,7 +181,7 @@
 
 <div class="seccion" id="seccion-5" style="display: none;">
   <h1>te celebro, Lucy.<br>– M.</h1>
-  <div class="seguir" onclick="volverAlInicio()">volver a empezar</div>
+  <div class="seguir" onclick="location.href='?go=inicio'">volver a empezar</div>
 </div>
 
 <script>
@@ -297,7 +295,17 @@
   document.getElementById('seccion-5').style.display = 'none';
   document.getElementById('inicio').scrollIntoView({ behavior: 'smooth' });
 }
+
+window.addEventListener('load', () => {
+  const params = new URLSearchParams(window.location.search);
+  if (params.get('go') === 'inicio') {
+    document.getElementById('inicio').scrollIntoView({ behavior: 'smooth' });
+    // Limpiar el parámetro de la URL para futuros reloads
+    history.replaceState(null, '', window.location.pathname);
   }
+});
+  }
+
 </script>
 
 </body>
