@@ -11,10 +11,10 @@
       background: #0b0c1c;
       color: white;
       font-family: 'Courier New', monospace;
-      height: 100vh;
       overflow-x: hidden;
       scroll-behavior: smooth;
     }
+
     .estrella {
       position: fixed;
       width: 4px;
@@ -23,10 +23,12 @@
       animation: brillo 2s infinite alternate;
       z-index: 0;
     }
+
     @keyframes brillo {
       from { opacity: 0.2; }
       to { opacity: 1; }
     }
+
     .seccion {
       min-height: 100vh;
       display: flex;
@@ -38,21 +40,34 @@
       z-index: 1;
       padding: 20px;
     }
+
     h1 {
       font-size: 2em;
       margin-bottom: 30px;
       z-index: 2;
       position: relative;
     }
+
     #lucy {
-      width: 60px;
-      height: auto;
+      width: 50px;
+      height: 50px;
+      background-image: url('Lucy.svg');
+      background-size: contain;
+      background-repeat: no-repeat;
       position: fixed;
-      top: 10px;
+      top: 50px;
       left: 50%;
       transform: translateX(-50%);
-      z-index: 3;
+      z-index: 5;
+      animation: flotando 4s ease-in-out infinite;
     }
+
+    @keyframes flotando {
+      0% { transform: translateX(-50%) translateY(0); }
+      50% { transform: translateX(-50%) translateY(-10px); }
+      100% { transform: translateX(-50%) translateY(0); }
+    }
+
     .boton-circular, .tap, .seguir {
       margin-top: 40px;
       width: 120px;
@@ -68,9 +83,11 @@
       z-index: 2;
       position: relative;
     }
+
     .boton-circular:hover, .tap:hover, .seguir:hover {
       background: rgba(255, 255, 255, 0.1);
     }
+
     .mensaje-lateral {
       position: fixed;
       top: 20px;
@@ -80,6 +97,7 @@
       color: #ccc;
       z-index: 2;
     }
+
     .frase-flotante {
       font-size: 1.2em;
       opacity: 0;
@@ -89,133 +107,198 @@
       cursor: pointer;
       z-index: 2;
       position: relative;
+      margin-bottom: 10px;
     }
+
     @keyframes aparecer {
       to { opacity: 1; }
+    }
+
+    /* POPUP */
+    .popup {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: #0b0c1c;
+      color: white;
+      border: 1px solid white;
+      padding: 20px;
+      max-width: 50vw;
+      max-height: 50vh;
+      overflow-y: auto;
+      z-index: 10;
+    }
+
+    .popup-close {
+      position: absolute;
+      top: 10px;
+      right: 15px;
+      color: white;
+      cursor: pointer;
+      font-size: 18px;
+      font-weight: bold;
     }
   </style>
 </head>
 <body>
-  <img id="lucy" src="Lucy.svg" alt="Lucy">
 
-  <div class="seccion" id="inicio">
-    <h1>carta para lucy</h1>
-    <div class="boton-circular" onclick="document.getElementById('seccion-1').scrollIntoView()">tap/click aquí</div>
-  </div>
+<div id="lucy"></div>
 
-  <div class="seccion" id="seccion-1">
-    <h1>lo que sé que sabes</h1>
-    <div class="tap" id="tap1" onclick="mostrarFrase(1)">tap</div>
-  </div>
 
-  <div class="seccion" id="seccion-2">
-    <h1>lo que no te dije</h1>
-    <div class="tap" id="tap2" onclick="mostrarFrase(2)">tap</div>
-  </div>
+<!-- POPUP -->
+<div class="popup" id="popup">
+  <div class="popup-close" onclick="document.getElementById('popup').style.display='none'">✕</div>
+  <p><strong>esta carta es un artefacto vivo:</strong><br>
+  se abre cada vez que necesites recordar cómo te ve alguien que te ha visto de verdad.<br>
+  no se agota, no se cierra, no se lee igual dos veces. vuelve a ella cuando lo olvides.<br>
+  que te hable en la voz que haga falta. que te devuelva el pulso.</p>
+</div>
 
-  <div class="seccion" id="seccion-3">
-    <h1>lo que ahora sé por ti</h1>
-    <div class="tap" id="tap3" onclick="mostrarFrase(3)">tap</div>
-  </div>
+<!-- SECCIONES -->
+<div class="seccion" id="inicio">
+  <h1>carta para lucy</h1>
+  <div class="boton-circular" onclick="document.getElementById('seccion-1').scrollIntoView()">tap/click aquí</div>
+</div>
 
-  <div class="seccion" id="seccion-4">
-    <h1>lo que deseo que olvides</h1>
-    <div class="tap" id="tap4" onclick="mostrarFrase(4)">tap</div>
-  </div>
+<div class="seccion" id="seccion-1">
+  <h1>lo que sé que sabes</h1>
+  <div class="tap" id="tap1" onclick="mostrarFrase(1)">tap</div>
+</div>
 
-  <div class="seccion" id="seccion-5">
-    <div class="frase-flotante" style="animation: aparecer 2s forwards; font-size: 1.5em;">
-      te celebro, Lucy.<br>– M.
-    </div>
-  </div>
+<div class="seccion" id="seccion-2">
+  <h1>lo que no te dije</h1>
+  <div class="tap" id="tap2" onclick="mostrarFrase(2)">tap</div>
+</div>
 
-  <script>
-    const frases = {
-      1: [
-        "que tu fuerza no es un grito,\nes la forma en que ocupas espacio \nsin pedir permiso.",
-        "que eres una,\nuna como en unidad indivisible,\nuna como en primera chispa,\nuna como en origen.",
-        "que te mueves por amor,\npero no ese amor tibio, básico.",
-        "te mueve el amor que incomoda,\nel que disloca estructuras y siembra otras.",
-        "que tu arte no solo inspira—\ntu arte despierta\nlo que dormía bajo miedos y espera."
-      ],
-      2: [
-        "que el primer espacio \nen el que me sentí artista,\nme lo abriste tú.",
-        "que tu vulnerabilidad\nes la herramienta más afilada que \nllevas encima.",
-        "que tu empatía \ntiene precisión y contención.",
-        "que donde llegas,\nla palabra creación deja de sonar a ficción."
-      ],
-      3: [
-        "que no permitiste que nadie\nescribiera tu historia con caligrafía mediocre.",
-        "que no dejaron intactas tus ganas,\nvariaron, pero se mantuvieron ahí, firmes.",
-        "que sabes sostener,\nsin anularte, sin plegarte.",
-        "y ahora sé, con certeza profunda,\nque no vas a parar.\n ni ahora. ni nunca."
-      ],
-      4: [
-        "esa mentira útil \nque dice que la suavidad es debilidad—\nla suavidad es filo,\ny tú lo sabes bien.",
-        "que habitarte es lucha constante—\n a veces también se vale flotar.",
-        "...que todo cambio es dolor",
-        "a veces, cambiar es volver a casa.",
-      ]
+<div class="seccion" id="seccion-3">
+  <h1>lo que ahora sé por ti</h1>
+  <div class="tap" id="tap3" onclick="mostrarFrase(3)">tap</div>
+</div>
+
+<div class="seccion" id="seccion-4">
+  <h1>lo que deseo que olvides</h1>
+  <div class="tap" id="tap4" onclick="mostrarFrase(4)">tap</div>
+</div>
+
+<div class="seccion" id="seccion-5" style="display: none;">
+  <h1>te celebro, Lucy.<br>– M.</h1>
+  <div class="seguir" onclick="volverAlInicio()">volver a empezar</div>
+</div>
+
+<script>
+  const frases = {
+    1: [
+      "que tu fuerza no es un grito,\nes la forma silenciosa en que \nocupas espacio sin pedir permiso",
+      "que eres una,\nuna como en unidad indivisible,\nuna como en primera chispa,\nuna como en origen",
+      "que te mueves por amor,\npero no ese amor tibio. \nte mueve el amor que incomoda,\nel que disloca estructuras y siembra otras",
+      "que tu arte no solo inspira—\ntu arte despierta\nlo que dormía bajo siglos de espera",
+      "que lo tuyo no es resistencia,\n es insistencia con nombre propio",
+      "que no necesitas permiso para estar, \nhacer, o habitar con furia tierna",
+      "que no pediste lugar: lo bordaste \ncon hilo rojo sobre tela robada",
+      "que eres una sola y muchas, \ny ninguna está sola cuando tú estás"
+    ],
+    2: [
+      "que el primer espacio \nen el que me sentí artista,\nme lo abriste tú",
+      "que tu vulnerabilidad\nes la herramienta más afilada\n que llevas encima",
+      "que tu empatía \ntiene precisión quirúrgica",
+      "que donde llegas,\nla palabra colaborar\n deja de sonar a ficción",
+      "que vi tu vulnerabilidad pararse firme \ncon botas de combate",
+      "que tu manera de escuchar fue, \npara mí, una forma de ser vista",
+      "que me diste un espacio, y en él, \nme volví más yo \n(y como yo, cientos)",
+      "que hiciste hogar sin llaves, \nsin candados, sin miedo"
+    ],
+    3: [
+      "que no permitiste que nadie\nescribiera tu historia \ncon caligrafía de miedos ajenos",
+      "que no dejaron intactas tus ganas,\nvariaron, pero siguieron, siempre siguen",
+      "que sabes sostener,\nsin anularte, sin plegarte",
+      "que con certeza profunda,\nque no vas a parar.\n\nni ahora. ni nunca",
+      "que no todas las batallas \nse libran gritando: algunas se cosen",
+      "que un cuerpo que se nombra a sí mismo\n es un arma y un altar",
+      "que no te apagaron: \naprendiste a arder en otros colores",
+      "que caminar contigo es saber\n que hay futuro, incluso si se rompe"
+    ],
+    4: [
+      "esa mentira útil \nque dice que la suavidad es debilidad—\nla suavidad es filo,\ny tú lo sabes bien",
+      "que habitarte es lucha constante\n a veces también se vale flotar",
+      "que todo cambio es dolor\na veces, \ncambiar es volver a casa",
+      "que ser suave \nes rendirse",
+      "que dudar \nte debilita",
+      "que no tienes \nderecho a detenerte",
+      "que viniste a cargar \nlo que otres no pudieron"
+    ]
+  };
+
+  const indices = { 1: 0, 2: 0, 3: 0, 4: 0 };
+
+  function getRandomFrases(seccion, cantidad) {
+    const mezcladas = frases[seccion].sort(() => 0.5 - Math.random());
+    return mezcladas.slice(0, cantidad);
+  }
+
+  const frasesMostradas = {
+    1: getRandomFrases(1, 4),
+    2: getRandomFrases(2, 4),
+    3: getRandomFrases(3, 4),
+    4: getRandomFrases(4, 4)
+  };
+
+  function mostrarFrase(seccion) {
+    const contenedor = document.getElementById(`seccion-${seccion}`);
+    const boton = document.getElementById(`tap${seccion}`);
+    if (indices[seccion] === 0 && boton) boton.remove();
+
+    const frase = frasesMostradas[seccion][indices[seccion]];
+    const div = document.createElement('div');
+    div.className = 'frase-flotante';
+    div.textContent = frase;
+    div.onclick = () => {
+      div.remove();
+      indices[seccion]++;
+      if (indices[seccion] < frasesMostradas[seccion].length) {
+        mostrarFrase(seccion);
+      } else {
+        const siguiente = document.createElement('div');
+        siguiente.className = 'seguir';
+        siguiente.textContent = seccion === 4 ? 'seguir' : 'seguir';
+        siguiente.onclick = () => {
+          if (seccion === 4) {
+            document.getElementById('seccion-5').style.display = 'flex';
+            document.getElementById('seccion-5').scrollIntoView();
+          } else {
+            document.getElementById(`seccion-${seccion + 1}`).scrollIntoView();
+          }
+        };
+        contenedor.appendChild(siguiente);
+      }
     };
+    contenedor.appendChild(div);
+  }
 
-    const indices = { 1: 0, 2: 0, 3: 0, 4: 0 };
+  const coloresEstrella = [
+    ...Array(10).fill('#BEEF9E'),
+    ...Array(10).fill('#CAA8F5'),
+    ...Array(10).fill('#FE4A49'),
+    ...Array(10).fill('#4056F4'),
+    ...Array(10).fill('#CE1483'),
+    ...Array(50).fill('#FFFFFF')
+  ];
 
-    function mostrarFrase(seccion) {
-      const seccionEl = document.getElementById(`seccion-${seccion}`);
-      const boton = document.getElementById(`tap${seccion}`);
-      if (indices[seccion] === 0 && boton) boton.remove();
+  for (let i = 0; i < 100; i++) {
+    const estrella = document.createElement('div');
+    estrella.className = 'estrella';
+    estrella.style.top = `${Math.random() * 100}%`;
+    estrella.style.left = `${Math.random() * 100}%`;
+    estrella.style.backgroundColor = coloresEstrella[i % coloresEstrella.length];
+    estrella.style.animationDelay = `${Math.random() * 2}s`;
+    document.body.appendChild(estrella);
 
-      const fraseActual = frases[seccion][indices[seccion]];
-      const nueva = document.createElement('div');
-      nueva.className = 'frase-flotante';
-      nueva.textContent = fraseActual;
-      nueva.onclick = () => {
-        nueva.remove();
-        indices[seccion]++;
-        if (indices[seccion] < frases[seccion].length) {
-          mostrarFrase(seccion);
-        } else {
-          const siguiente = document.createElement('div');
-          siguiente.className = 'seguir';
-          siguiente.textContent = seccion === 4 ? 'seguir' : 'seguir';
-          siguiente.onclick = () => {
-            if (seccion === 4) {
-              document.getElementById('seccion-5').scrollIntoView();
-              setTimeout(() => {
-                const reinicio = document.createElement('div');
-                reinicio.className = 'seguir';
-                reinicio.textContent = 'volver a empezar';
-                reinicio.onclick = () => location.reload();
-                document.getElementById('seccion-5').appendChild(reinicio);
-              }, 1000);
-            } else {
-              document.getElementById(`seccion-${seccion + 1}`).scrollIntoView();
-            }
-          };
-          seccionEl.appendChild(siguiente);
-        }
-      };
-      seccionEl.appendChild(nueva);
-    }
+    function volverAlInicio() {
+  document.getElementById('seccion-5').style.display = 'none';
+  document.getElementById('inicio').scrollIntoView({ behavior: 'smooth' });
+}
+  }
+</script>
 
-    const coloresEstrella = [
-      ...Array(10).fill('#BEEF9E'),
-      ...Array(10).fill('#CAA8F5'),
-      ...Array(10).fill('#FE4A49'),
-      ...Array(10).fill('#4056F4'),
-      ...Array(10).fill('#CE1483'),
-      ...Array(50).fill('#FFFFFF')
-    ];
-
-    for (let i = 0; i < 100; i++) {
-      const estrella = document.createElement('div');
-      estrella.className = 'estrella';
-      estrella.style.top = `${Math.random() * 100}%`;
-      estrella.style.left = `${Math.random() * 100}%`;
-      estrella.style.backgroundColor = coloresEstrella[i];
-      estrella.style.animationDelay = `${Math.random() * 2}s`;
-      document.body.appendChild(estrella);
-    }
-  </script>
 </body>
 </html>
